@@ -1,0 +1,67 @@
+{% extends 'onlineshop/base.html' %}
+{% load static %}
+
+{% block title %}Pay online {% endblock %}
+
+{% block content %}
+
+<h1>Choose Your Prefered Payment Medium.</h1>
+<button id="payment-button" class="light">Pay with Khalti</button>
+
+
+
+
+<script>
+
+    var config = {
+        // replace the publicKey with yours
+        "publicKey": "test_public_key_52f871fc352e4a66b75add1966f05a8b",
+        "productIdentity": "1234567890",
+        "productName": "Dragon",
+        "productUrl": "http://gameofthrones.wikia.com/wiki/Dragons",
+        "eventHandler": {
+            onSuccess(payload) {
+                var csrftoken = getCookie('csrftoken');
+                console.log(csrftoken)
+                $.post('verify/', { payload, 'csrfmiddlewaretoken': csrftoken })
+                console.log(payload);
+            },
+            onError(error) {
+                console.log(error);
+            },
+            onClose() {
+                console.log('widget is closing');
+            }
+        }
+    };
+
+    // After dal bhat
+    // var http = new XMLHttpRequest();
+    // var url = 'ok.com/asdsa';
+    // http.open('POST', url, true);
+    var checkout = new KhaltiCheckout(config);
+    var btn = document.getElementById("payment-button");
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    btn.onclick = function () {
+        checkout.show({ amount: 1000, mobile: 9800000000 });
+    }
+    // btn.onclick = function () {
+    //     var res;
+    // }
+</script>
+
+{% endblock %}
